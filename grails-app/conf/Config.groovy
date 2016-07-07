@@ -14,7 +14,7 @@
 grails.project.groupId = "com.ttnd.linksharing" // change this to alter the default package name and Maven publishing destination
 
 
-grails.config.locations = ["file:${userHome}/Config.groovy"]
+//grails.config.locations = ["file:${userHome}/Config.groovy"]
 
 // The ACCEPT header will not be used for content negotiation for user agents containing the following strings (defaults to the 4 major rendering engines)
 grails.mime.disable.accept.header.userAgents = ['Gecko', 'WebKit', 'Presto', 'Trident']
@@ -103,7 +103,7 @@ log4j.main = {
     // Example of changing the log pattern for the default console appender:
     //
     appenders {
-        console name:'stdout', layout:pattern(conversionPattern: '%c{2} %m%n')
+        console name:'stdout', layout:pattern(conversionPattern: '%d %5p %c{1} [%t] (%F:%M():%L) - %m%n')
     }
 
     info 'grails.app'
