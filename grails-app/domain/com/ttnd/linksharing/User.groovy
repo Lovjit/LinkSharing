@@ -4,9 +4,11 @@ class User {
 
     String firstName
     String lastName
+    String name
     String email
     String userName
     String password
+    String confirmPassword
     Byte[] photo
     Boolean isAdmin
     Boolean isActive
@@ -15,7 +17,7 @@ class User {
 
     static hasMany = [topics:Topic,subscriptions:Subscription,readingItems:ReadingItem,resources:Resource]
 
-    static transients = ['name']
+    static transients = ['name','confirmPassword']
 
     static constraints = {
         firstName nullable: false , blank: false
@@ -26,6 +28,11 @@ class User {
         photo nullable : true
         isAdmin nullable : true
         isActive nullable : true
+        // Closure with three arguments, the third being the errors object
+        confirmPassword validator: { val, obj, errors ->
+            if (!(obj.confirmPassword == val)) errors.rejectValue('password1', 'noMatch')
+        }
+
     }
 
     static mapping = {

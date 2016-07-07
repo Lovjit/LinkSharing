@@ -1,5 +1,6 @@
 package com.ttnd.linksharing
 
+import com.google.javascript.rhino.jstype.ModificationVisitor
 import grails.test.mixin.Mock
 import grails.test.mixin.TestFor
 import grails.test.spock.Integration
@@ -9,7 +10,9 @@ import spock.lang.Specification
 /**
  * See the API for {@link grails.test.mixin.domain.DomainClassUnitTestMixin} for usage instructions
  */
-class TopicSpec extends IntegrationSpec{
+@TestFor(Topic)
+@Mock(User)
+class TopicSpec extends Specification{
 
     def "Topic name cannot be null/blank"() {
 
