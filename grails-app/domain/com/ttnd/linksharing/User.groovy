@@ -30,7 +30,7 @@ class User {
         isActive nullable : true
         // Closure with three arguments, the third being the errors object
         confirmPassword validator: { val, obj, errors ->
-            if (!(obj.confirmPassword == val)) errors.rejectValue('password1', 'noMatch')
+            if (!(obj.confirmPassword == val)) errors.rejectValue('password', 'noMatch')
         }
 
     }
