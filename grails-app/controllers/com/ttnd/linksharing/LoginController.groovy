@@ -19,8 +19,7 @@ class LoginController {
             session['user'] = user
             redirect(action: 'index')
             }else{
-            flash.error = "" +
-                    ""
+            flash.error = "Account is in active"
             }
         }else{
             flash.error = "User not found"

@@ -42,4 +42,8 @@ class User {
     String getName(){
         return this.firstName+" "+this.lastName
     }
+
+    String toString(){
+        return "User name is ${userName}"
+    }
 }

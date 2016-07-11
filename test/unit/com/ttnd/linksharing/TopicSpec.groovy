@@ -56,4 +56,18 @@ class TopicSpec extends Specification{
         then:
         Topic.count() == 1
     }
+
+    /*String toString(){
+        return "Topic name ${this.name} and created by ${this.createdBy.name}"
+    }*/
+    def "Testing of toString method"() {
+        setup:
+        User user = new User(firstName: "Bla", lastName: "Bla", userName: "bla", password: "1234675",
+                email: "bla@gmail.com")
+        Topic topic = new Topic(createdBy: user, name: "Topic1", visibility: Visibility.PUBLIC)
+        when:
+        String topicToString = topic.toString()
+        then:
+        topicToString == 'Topic name Topic1 and created by Bla Bla'
+    }
 }

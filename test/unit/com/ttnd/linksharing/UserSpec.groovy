@@ -1,5 +1,6 @@
 package com.ttnd.linksharing
 
+import grails.test.mixin.Mock
 import grails.test.mixin.TestFor
 import grails.test.spock.IntegrationSpec
 import spock.lang.Specification
@@ -7,7 +8,8 @@ import spock.lang.Specification
 /**
  * See the API for {@link grails.test.mixin.domain.DomainClassUnitTestMixin} for usage instructions
  */
-class UserSpec extends IntegrationSpec {
+@TestFor(User)
+class UserSpec extends Specification {
 
     def "Email should be unique,not null/blank and email name should satisfy basic email format"() {
 
@@ -74,5 +76,16 @@ class UserSpec extends IntegrationSpec {
         User.count == 1
 
 
+    }
+
+    def "Testing of toString method"() {
+
+        setup:
+        User user = new User(firstName: "Vikas",lastName: "Sharma",userName: "vikas",password: "1234675",
+                email: "vikas@gmail.com")
+        when:
+        String userToString = user.toString()
+        then:
+        userToString == 'User name is vikas'
     }
 }
