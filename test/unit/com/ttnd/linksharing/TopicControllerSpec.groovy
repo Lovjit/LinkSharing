@@ -62,4 +62,33 @@ class TopicControllerSpec extends Specification {
         then:
         response.redirectUrl == '/login/index'
     }
+
+
+    /*Add topic save action in TopicController
+    -Add save action in topic controller, which takes a topic and string seriousness as an argument
+    -Create a method in visibility enum to convert string into enum and write test case for the same
+    -Session user should be createdBy of the topic
+    -If a topic is saved without error flash message should be set and success should be rendered
+    -If a topic is not saved errors should be logged flash error should be set and error text should be rendered
+    -Write the test case for the Topic save.*/
+    def "Testing of save action"() {
+
+        setup:
+        User user = new User(firstName: "Bla", lastName: "Bla", userName: "bla", password: "1234675",
+                email: "bla@gmail.com")
+        user.save()
+        session['user'] = user
+        when:
+        controller.save(topicName,visibility)
+        then:
+        response.contentAsString == resultAsString
+        where:
+        topicName | visibility | resultAsString
+        "t1"      | "PUBLIC"   | "success"
+        "t2"      | "pjodfsj"   | "Error while saving topic"
+
+
+
+    }
+
 }

@@ -37,6 +37,7 @@ class User {
 
     static mapping = {
         photo type: 'blob'
+        sort id: 'desc'
     }
 
     String getName(){

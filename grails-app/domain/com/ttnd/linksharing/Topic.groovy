@@ -19,6 +19,10 @@ class Topic {
         visibility nullable: false
     }
 
+    static mapping = {
+        sort name: 'asc'
+    }
+
     def afterInsert = {
         Subscription subscription = new Subscription(topic: this,user: this.createdBy,seriousness: Seriousness.VERY_SERIOUS)
 

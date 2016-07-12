@@ -4,7 +4,7 @@ class Subscription {
 
     Topic topic
     User user
-    Seriousness seriousness
+    Seriousness seriousness = Seriousness.SERIOUS
     Date dateCreated
     Date lastUpdated
 
@@ -15,4 +15,10 @@ class Subscription {
         user (nullable: false)
         seriousness (nullable: false)
     }
+
+    static fetchMode = [topic : 'eager',user : 'eager']
+
+
+
+
 }

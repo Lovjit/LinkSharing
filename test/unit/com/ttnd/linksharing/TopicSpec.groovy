@@ -70,4 +70,6 @@ class TopicSpec extends Specification{
         then:
         topicToString == 'Topic name Topic1 and created by Bla Bla'
     }
+
+
 }
