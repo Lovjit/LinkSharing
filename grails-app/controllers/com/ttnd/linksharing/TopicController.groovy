@@ -1,10 +1,12 @@
 package com.ttnd.linksharing
 
+import com.ttnd.linksharing.co.ResourceSearchCO
+
 class TopicController {
 
     def index() { }
 
-    def show(Long id){
+    def show(ResourceSearchCO resourceSearchCO, Long id){
         Topic topic = Topic.findById(id)
         if(topic){
 
@@ -57,6 +59,10 @@ class TopicController {
 
     def read(Long topicId){
         render Topic.findById(topicId).toString()
+    }
+
+    def test(){
+        Topic.getTrendingTopics()
     }
 
 }

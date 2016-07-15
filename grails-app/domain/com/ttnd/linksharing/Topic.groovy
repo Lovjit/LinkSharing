@@ -1,5 +1,7 @@
 package com.ttnd.linksharing
 
+import com.ttnd.linksharing.vo.RatingInfoVO
+import com.ttnd.linksharing.vo.TopicVO
 import grails.validation.ValidationException
 
 class Topic {
@@ -23,6 +25,8 @@ class Topic {
         sort name: 'asc'
     }
 
+    static fetchMode = [createdBy : 'eager']
+
     def afterInsert = {
         Subscription subscription = new Subscription(topic: this,user: this.createdBy,seriousness: Seriousness.VERY_SERIOUS)
 
@@ -36,6 +40,44 @@ class Topic {
         } catch (ValidationException validationException) {
             log.error("Error while saving subscription")
         }
+    }
+
+    //Create static method getTrendingTopics in Topic domain which will return list of TopicVO
+    // Public Topic with maximum resources is considered as a trending topic
+    /*- Use createalias and groupproperty in criteria
+    - Use count for getting count of resources of a topic
+    - Use multiple order statement first one ordered by resource count and second one
+    ordered by topic name
+    -Maximum 5 records should be shown
+    - Topic with maximum resource should come first*/
+    // Select id,count('resource') as res_count from topic
+    //        groupby id orderby res_count,name
+    static List<TopicVO> getTrendingTopics(){
+        List result = Topic.createCriteria().list {
+            createAlias("resources","resources")
+            projections {
+                groupProperty('id')
+                count('resources','resCount')
+            }
+            order 'resCount'
+            maxResults 5
+            firstResult 0
+        }
+        List<Long> topicIds = new ArrayList<Long>()
+        def counts = []
+        result.each {
+            topicIds.add(it[0])
+            counts.add(it[1])
+        }
+        List<Topic> topics = Topic.findAllByIdInList(topicIds)
+        List<TopicVO> topicVOList = new ArrayList<TopicVO>()
+        topics.eachWithIndex {topic,idx ->
+            TopicVO topicVO = new TopicVO(id: topic.id,name: topic.name,visibility: topic.visibility
+                                          ,count: counts[idx] , createdBy: topic.createdBy)
+            println topicVO
+        }
+
+        return null
     }
 
     String toString(){

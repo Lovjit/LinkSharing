@@ -23,6 +23,19 @@ class ApplicationFilters {
                 }*/
             }
         }
+
+
+        /*Update filters and user should be able to access all the actions except those which require session user
+        - Few actions which requires session users are /linkResource/save, readingItem/save,
+                resource/delete, resourceRating/save, subscription controller, topic/save, /user/index*/
+        accessCheck(uri:['/linkResource/save','/readingItem/save','/resource/delete'
+                         ,'/resourceRating/save','/topic/save','/user/index']){
+            before = {
+                println("<<<<<<<<<<<<<Inside access check>>>>>>>>>>>>>>>>>>>")
+                render '404'
+            }
+        }
+
     }
 
 

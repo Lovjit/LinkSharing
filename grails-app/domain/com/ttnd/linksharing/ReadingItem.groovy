@@ -13,4 +13,8 @@ class ReadingItem {
         user nullable: false
         isRead nullable: false
     }
+
+    String toString(){
+        return "Resource : ${resource.description} and user : ${user.name}"
+    }
 }

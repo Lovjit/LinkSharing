@@ -6,7 +6,13 @@ class LoginController {
         if(session['user']){
             redirect(controller: 'User',action: 'index')
         }else{
-            render "failure"
+
+            //render "failure"
+
+            Resource.getTopResources()
+
+
+
         }
     }
 
@@ -34,13 +40,7 @@ class LoginController {
     }
 
     def dummy(){
-        println("Inside dummy")
-        User user1 = User.findByEmail("vikas@gmail.com")
-        /*user1.setIsActive(true)*/
-        user1.isActive = true
-       // println "------------------ ${user1.firstName}-------------------"
-        user1.save(flush: true)
-       // println ">>>>>>>>>>>>>>>>>>>>>>>>>>${user1.errors.getAllErrors().size()}<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"
+        Resource.changeIsRead(1,true)
     }
 
 }

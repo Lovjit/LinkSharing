@@ -1,5 +1,7 @@
 package com.ttnd.linksharing
 
+import com.ttnd.linksharing.co.SearchCO
+
 class User {
 
     String firstName
@@ -31,6 +33,30 @@ class User {
         // Closure with three arguments, the third being the errors object
         confirmPassword validator: { val, obj, errors ->
             if (!(obj.confirmPassword == val)) errors.rejectValue('password', 'noMatch')
+        }
+
+    }
+
+   /* - Create method getUnReadResources in user domain which takes SearchCO argument
+    and returns unreaditems of user from ReadingItem domain
+    - The search should also work using user/index page, q parameter of SearchCO.
+    If searchco.q is found then getUnReadResources method will search the items based on ilike of resource.description.
+    - The pagination parameter should also be used in getUnReadResources criteria query.*/
+    // Select * from reading_item where user = user and isread = false
+    static List<ReadingItem> getUnReadResources(SearchCO searchCO,User user){
+
+        List<ReadingItem> unreadReadingItems = ReadingItem.createCriteria().list {
+            createAlias("resource","res")
+            createAlias("user","user")
+
+            if(searchCO.q){
+                ilike("res.description","%${searchCO.q}%")
+            }
+            eq("user",user)
+            eq("isRead",false)
+
+            maxResults searchCO.maxResult
+            firstResult searchCO.offset
         }
 
     }
