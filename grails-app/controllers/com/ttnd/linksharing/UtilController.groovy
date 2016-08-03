@@ -23,4 +23,11 @@ class UtilController {
 
 
     }
+
+
+    def test(){
+        flash.error = "Have pateince"
+        flash.message = "Just like I said"
+        render view: '/Temp'
+    }
 }

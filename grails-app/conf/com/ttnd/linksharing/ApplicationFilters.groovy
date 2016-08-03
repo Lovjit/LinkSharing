@@ -31,8 +31,8 @@ class ApplicationFilters {
         accessCheck(uri:['/linkResource/save','/readingItem/save','/resource/delete'
                          ,'/resourceRating/save','/topic/save','/user/index']){
             before = {
-                println("<<<<<<<<<<<<<Inside access check>>>>>>>>>>>>>>>>>>>")
-                render '404'
+                /*println("<<<<<<<<<<<<<Inside access check>>>>>>>>>>>>>>>>>>>")
+                render '404'*/
             }
         }
 

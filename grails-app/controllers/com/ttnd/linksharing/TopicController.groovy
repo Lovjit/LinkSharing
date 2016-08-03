@@ -1,10 +1,82 @@
 package com.ttnd.linksharing
 
 import com.ttnd.linksharing.co.ResourceSearchCO
+import com.ttnd.linksharing.vo.ResourceVO
+import com.ttnd.linksharing.vo.TopicVO
 
 class TopicController {
 
-    def index() { }
+    def topicService
+    def userService
+    def utilService
+
+    def index(Long topicId) {
+        List<User> users = Subscription.createCriteria().list {
+            createAlias("user","user")
+            createAlias("topic","t")
+            projections {
+                property("user")
+            }
+            eq('t.id',topicId)
+        }
+
+        long loggedInUserId
+        User loggedInUser
+        if(session['user']){
+            loggedInUserId = session['user'].id
+            loggedInUser = User.findById(loggedInUserId)
+        }
+
+        List<Topic> topics = topicService.getAllTopics()
+        Topic topic = Topic.findById(topicId)
+        List<Resource> topicResources = topic.resources.toList()
+        List<ReadingItem> readingItems = []
+        List<ResourceVO> resourceVOList = []
+        if(topicResources.size() > 0){
+                readingItems = ReadingItem.createCriteria().list {
+                createAlias('user','user')
+                createAlias('resource','resource')
+                if(loggedInUser != null){
+                        eq("user",loggedInUser)
+                }
+                eq("isRead",false)
+                'in'("resource",topicResources)
+                order ("lastUpdated", "desc")
+                maxResults 5
+            }
+
+            resourceVOList = readingItems.collect{
+
+                ResourceVO resourceVO = new ResourceVO(createdBy : it.resource.createdBy, topic: it.resource.topic,
+                        description: it.resource.description,resourceId: it.resource.id)
+                if( (it.resource) instanceof LinkResource){
+                    resourceVO.isLinkResource = true
+                    resourceVO.url = it.resource.url
+                }else{
+                    if( (it.resource) instanceof DocumentResource){
+                        resourceVO.filePath = it.resource.filePath
+                    }
+                }
+                resourceVO.lastUpdated = utilService.getDateDiffInString(it.resource.lastUpdated,new Date())
+                return resourceVO
+
+            }
+
+        }
+
+        User topicCreator = topic.createdBy
+        List<Long> subscribedTopicIds = userService.getSubscribedTopicIds(loggedInUser)
+        Subscription subscription = Subscription.findByTopicAndUser(topic,loggedInUser)
+        if(!subscription){
+            subscription = new Subscription()
+        }
+        TopicVO topicVO = new TopicVO(id : topic.id,name:topic.name,visibility: topic.visibility,
+                                      resourceCount: resourceVOList.size(),totalSubscription: users.size(),
+                                      createdBy: topicCreator,seriousness: subscription.seriousness)
+
+        render (view: 'index',model: ['users' : users,'resources' : resourceVOList,'topic' : topicVO,
+                                      'subscribedTopicIds' : subscribedTopicIds,'topics' : topics])
+    }
 
     def show(ResourceSearchCO resourceSearchCO, Long id){
         Topic topic = Topic.findById(id)
@@ -44,16 +116,17 @@ class TopicController {
                                     createdBy: session['user'])
             if(topic.validate()){
                 topic.save()
-                flash.message = 'Topic saved'
+                //flash.message = 'Topic saved'
                 render 'success'
             }else{
-                flash.error = 'Error while saving topic'
-                render "${flash.error}"
+                //flash.error = 'Error while saving topic'
+                render ""
             }
         }catch(IllegalArgumentException){
-            flash.error = 'Error while saving topic'
-            render "${flash.error}"
+            //flash.error = 'Error while saving topic'
+            render ""
         }
+        //redirect(controller: 'user',action: 'test')
 
     }
 
@@ -62,7 +135,38 @@ class TopicController {
     }
 
     def test(){
-        Topic.getTrendingTopics()
+        //Topic.getTrendingTopics()
     }
+
+    def update(Long topicId,String topicName){
+        Topic topic = Topic.findById(topicId)
+        topic.name = topicName
+        if(topic.validate()){
+            topic.save(flush: true)
+            render "Topic updated successfully"
+        }else{
+            response.sendError(500)
+        }
+    }
+
+    def updateVisibility(Long topicId,String visibility){
+        def result = topicService.updateTopicVisibility(topicId,visibility)
+        if(result){
+            render "Topic updated successfully"
+        }else{
+            response.sendError(500)
+            render "Error while updating"
+        }
+    }
+
+    def getTrendingTopic(){
+        List<TopicVO> topicVO = topicService.getTrendingTopics(session['user'].id)
+        return topicVO
+    }
+
+    def deleteTopic(Long topicId){
+        render topicService.delete(topicId)
+    }
+
 
 }

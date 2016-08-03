@@ -4,11 +4,11 @@ class Subscription {
 
     Topic topic
     User user
-    Seriousness seriousness = Seriousness.SERIOUS
+    Seriousness seriousness = Seriousness.VERY_SERIOUS
     Date dateCreated
     Date lastUpdated
 
-    static belongsTo = [Topic,User]
+    static belongsTo = [topic: Topic,user : User]
 
     static constraints = {
         topic (nullable: false,unique: ['user'])

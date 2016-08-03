@@ -56,7 +56,7 @@ class SubscriptionControllerSpec extends Specification {
         when:
         controller.delete(receivedSubs.getId())
         then:
-        //Subscription.count == 1
+        //Subscription.resourceCount == 1
         response.getContentAsString() == 'success'
 
     }

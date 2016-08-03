@@ -3,7 +3,7 @@ package com.ttnd.linksharing
 class DocumentResource extends Resource{
 
     String filePath
-
+    String contentType
 
     static constraints = {
         filePath nullable: false,blank: false

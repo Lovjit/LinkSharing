@@ -28,10 +28,10 @@ class BootStrap {
 
         // Creating default admin user
         User adminUser = new User(firstName: "Admin", lastName: "Ttn", userName: "admin", password: "admin@ttn",
-                email: "admin@ttnd.com")
+                email: "admin@ttnd.com",isActive: true)
         // Creating default normal user
         User normalUser = new User(firstName: "Aam", lastName: "Aadmi", userName: "aam", password: "aam@aadmi",
-                email: "aam@aap.com")
+                email: "aam@aap.com",isActive: true)
         if (!User.count) {
             try {
                 adminUser.save(failOnError: true)
@@ -46,7 +46,7 @@ class BootStrap {
     }
 
     /*Add createTopics method in bootstrap
-    - 5 topics per user needs to be created if Topic count is 0
+    - 5 topics per user needs to be created if Topic resourceCount is 0
     - Creator of topic should automatically be subscribed to topic (Use after insert event of topic)
     - Errors should be logged if topic or subscriptions is not saved
     - WithNewSession in after insert because it will not work without it

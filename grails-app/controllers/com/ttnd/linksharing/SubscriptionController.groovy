@@ -1,18 +1,13 @@
 package com.ttnd.linksharing
 
+import grails.converters.JSON
+
 class SubscriptionController {
+
+    def subscriptionService
 
     def index() { }
 
-    /*Subscription domain should have a default seriousness as Serious.
-    "Implement subscription save, update, delete
-    -Create subscription delete action which takes id as parameter, if it exist then delete and send success else render not found
-    - Create save action which takes id as parameter for topic id, user for subscription should be read from the session,
-      if subscription save render success else errors
-    -Create update action which takes an id and serious as a parameter if subscription and
-    seriousness found, then save else render not found, if saved then render success else errors"
-    Use eager fetching for topic and user in subscription
-    */
     def save(Long topicId){
         Topic topic = Topic.findById(topicId)
         Subscription subscription = new Subscription(topic: topic,user: session['user'])
@@ -24,7 +19,6 @@ class SubscriptionController {
         }
     }
 
-    // Verify the purpose
     def update(Long subscriptionId,Seriousness seriousness){
         Subscription subscription = Subscription.findById(subscriptionId)
         if(subscription){
@@ -49,4 +43,42 @@ class SubscriptionController {
             render 'Subscription not found'
         }
     }
+
+    def updateSubscription(Long topicId,boolean isSubscription){
+        Topic topic = Topic.findById(topicId)
+        User loggedInUser = User.findById(session['user'].id)
+        Subscription subscription
+        if(isSubscription){
+            subscription = new Subscription(topic : topic,user : loggedInUser)
+            if( subscription.validate()){
+                subscription.save(failOnError: true)
+            }
+        }else{
+            subscription = Subscription.findByTopicAndUser(topic,loggedInUser)
+            subscription.delete(flush: true)
+        }
+
+        render "success"
+    }
+
+    def updateSubscriptionSeriousness(Long topicId,String seriousnessVal){
+
+        render subscriptionService.updateSubscriptionSeriousness(topicId,seriousnessVal,session['user'].id)
+
+    }
+
+    def deleteSubscription(Long topicId){
+        String result = subscriptionService.deleteSubscription(topicId,session['user'].id)
+        if(result){
+            redirect(controller: 'user',action: 'index')
+        }else{
+            render ""
+        }
+    }
+
+    def subscribeViaMail(String emailId,Long topicId){
+        render subscriptionService.createSubscriptionViaMailInvite(emailId,topicId)
+       // println "Here"
+    }
+
 }

@@ -10,6 +10,7 @@ class RatingInfoVO {
     int totalVotes
     long averageScore
     int totalScore
+    int userRating = -1
 
     String toString(){
         return "totalVotes : ${this.totalVotes} , averageScore : ${this.averageScore} , totalScore : ${this.totalScore}"
